@@ -34,7 +34,6 @@ export default function App() {
             (<Stack.Screen name="Profile" component={Profile} />
             ): (<Stack.Screen name="Onboarding" component={Onboarding} /> )
         }
-        {/* <Stack.Screen name="Onboarding" component={Onboarding} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
