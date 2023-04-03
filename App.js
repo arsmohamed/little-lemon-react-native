@@ -27,6 +27,8 @@ export default function App() {
   }
 
   return (
+      // <Profile/>
+      // <Onboarding/>
     <NavigationContainer  >
       <Stack.Navigator>
         {
