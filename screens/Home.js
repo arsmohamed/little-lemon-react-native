@@ -7,11 +7,11 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('little_lemon', '1.0');
 
 const categories = [
-  { id: 1, name: 'Starters' },
-  { id: 2, name: 'Mains' },
-  { id: 3, name: 'Desserts' },
-  { id: 4, name: 'Drinks' },
-  { id: 5, name: 'Special' },
+  { id: 1, name: 'starters' },
+  { id: 2, name: 'mains' },
+  { id: 3, name: 'desserts' },
+  // { id: 4, name: 'Drinks' },
+  // { id: 5, name: 'Special' },
 ];
 
 const Header = () => {
@@ -24,11 +24,15 @@ const Header = () => {
   const [menu, setMenu] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategoriesName, setSelectedCategoriesName] = useState([]);
   const toggleCategory = (categoryId) => {
     if (selectedCategories.includes(categoryId)) {
       setSelectedCategories(selectedCategories.filter((id) => id !== categoryId));
+      console.log(selectedCategories)
+
     } else {
       setSelectedCategories([...selectedCategories, categoryId]);
+      console.log(selectedCategories)
     }
   };
 
@@ -38,7 +42,7 @@ const Header = () => {
       <View style={{height: 90}}>
         <TouchableOpacity
         style={[styles.category, isSelected && styles.selectedCategory]}
-        onPress={() => toggleCategory(item.id)}
+        onPress={() => (toggleCategory(item.id), setSelectedCategoriesName(item.name))}
       >
         <Text style={[styles.categoryText, isSelected && styles.selectedCategoryText]}>
           {item.name}
@@ -57,6 +61,7 @@ const Header = () => {
         style={{height:'100%',}}
       />
     </ScrollView>
+
   useEffect(() => {
     db.transaction(tx => {
       tx.executeSql(
@@ -71,7 +76,7 @@ const Header = () => {
         },
         error => console.log(error)
       )}
-    )})
+    )}, [])
   
   useEffect(() => {
     const fetchData = async () => {
@@ -104,18 +109,41 @@ const Header = () => {
           onChangeText={text => setSearchInput(text)} />
     </View>
   </View>
+  
   const renderMenuItem = ({ item }) => {
-    return (
-      <View style={styles.item}>
-        <View style={styles.details}>
-          <Text style={styles.name}>{item.title}</Text>
-          <Text style={styles.description}>{item.description}</Text>
-          <Text style={styles.price}>{`$ ${item.price}`}</Text>
+    // Show all items if no categories are selected
+    if (selectedCategories.length === 0) {
+      return (
+        <View style={styles.item}>
+          <View style={styles.details}>
+            <Text style={styles.name}>{item.title}</Text>
+            <Text style={styles.description}>{item.description}</Text>
+            <Text style={styles.price}>{`$ ${item.price}`}</Text>
+          </View>
+          <Image source={{ uri: `${item.image}` }} style={styles.image} />
         </View>
-        <Image source={{ uri: `${item.image}`, }} style={styles.image} />
-      </View>
-    );
+      );
+    }
+  
+    // Filter items based on selected categories
+    else if (selectedCategoriesName.includes(item.category)) {
+      // console.log(selectedCategories + "and the item category is : " + item.category)
+      return (
+        <View style={styles.item}>
+          <View style={styles.details}>
+            <Text style={styles.name}>{item.title}</Text>
+            <Text style={styles.description}>{item.description}</Text>
+            <Text style={styles.price}>{`$ ${item.price}`}</Text>
+          </View>
+          <Image source={{ uri: `${item.image}` }} style={styles.image} />
+        </View>
+      );
+    }
+  
+    return null;
   };
+  
+  
   
   const HeaderView = <View style={styles.headerContainer}>
     <Image
@@ -133,7 +161,7 @@ const Header = () => {
     </View>
 
   return (
-    <View style={{height: '100%'}}>
+    <View style={{height: '100%', marginTop: 20}}>
         {HeaderView}
         {IntoView}
         {CategoryScroll}
