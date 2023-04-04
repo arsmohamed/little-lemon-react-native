@@ -102,11 +102,11 @@ const styles = StyleSheet.create({
     header: {
       alignItems: 'center',
       backgroundColor: '#AAC3F8',
-      height: '7%',
-      width: '100%'
+      height: '12%',
+      width: '100%',
     },
     logo: {
-      marginTop: 5 ,
+      marginTop: '7%' ,
       width: '60%', 
       height: '80%', 
       resizeMode: 'contain'
