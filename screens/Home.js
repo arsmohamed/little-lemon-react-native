@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, FlatList, TextInput, TouchableOpacity , ScrollView} from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationContainer } from '@react-navigation/native';
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('little_lemon', '1.0');
 
+const categories = [
+  { id: 1, name: 'Starters' },
+  { id: 2, name: 'Mains' },
+  { id: 3, name: 'Desserts' },
+  { id: 4, name: 'Drinks' },
+  { id: 5, name: 'Special' },
+];
 
 const Header = () => {
   const navigation = useNavigation();
@@ -16,7 +23,40 @@ const Header = () => {
 
   const [menu, setMenu] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const toggleCategory = (categoryId) => {
+    if (selectedCategories.includes(categoryId)) {
+      setSelectedCategories(selectedCategories.filter((id) => id !== categoryId));
+    } else {
+      setSelectedCategories([...selectedCategories, categoryId]);
+    }
+  };
 
+  const renderItem = ({ item }) => {
+    const isSelected = selectedCategories.includes(item.id);
+    return (
+      <View style={{height: 90}}>
+        <TouchableOpacity
+        style={[styles.category, isSelected && styles.selectedCategory]}
+        onPress={() => toggleCategory(item.id)}
+      >
+        <Text style={[styles.categoryText, isSelected && styles.selectedCategoryText]}>
+          {item.name}
+        </Text>
+      </TouchableOpacity>
+      </View>
+    );
+  };
+  const CategoryScroll = <ScrollView horizontal>
+      <FlatList
+        data={categories}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{height:'100%',}}
+      />
+    </ScrollView>
   useEffect(() => {
     db.transaction(tx => {
       tx.executeSql(
@@ -46,6 +86,7 @@ const Header = () => {
     };
     fetchData();
   }, []);
+  
   const [searchInput, setSearchInput] = useState('');
   const IntoView = <View style={styles.IntoViewStyle}>
     <Text style={{color: "#F4CE14", fontSize: '40pt', marginLeft: 10}}> Little Lemon</Text>
@@ -95,6 +136,7 @@ const Header = () => {
     <View style={{height: '100%'}}>
         {HeaderView}
         {IntoView}
+        {CategoryScroll}
         <FlatList
             data={menu}
             keyExtractor={(item) => item.name}
@@ -108,6 +150,27 @@ const Header = () => {
 export default Header;
 
 const styles = {
+  category: {
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    marginRight: 10,
+    height:40,
+    marginTop: 10, 
+  },
+  categoryText: {
+    fontWeight: 'bold',
+    color: 'black',
+    fontSize: 16,
+  },
+  selectedCategory: {
+    backgroundColor: '#495E57',
+  },
+  selectedCategoryText: {
+    backgroundColor: '#495E57',
+    color: 'white'
+  },
   IntoViewStyle: {
     backgroundColor: '#495E57' , 
     width: '100%',
