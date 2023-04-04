@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Onboarding from './screens/Onboarding';
 import Profile from './screens/Profile';
+import HomeScreen from './screens/Home'; 
 
 const Stack = createNativeStackNavigator();
 
@@ -11,7 +12,8 @@ export default function App() {
   
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [fetchName, setFetchName] = useState('');
+  const [fetchEmail, setFetchEmail] = useState('');
   useEffect(() => {
     async function fetchIsOnboardingCompleted() {
       const value = await AsyncStorage.getItem('isOnboardingCompleted');
@@ -20,21 +22,47 @@ export default function App() {
     }
     fetchIsOnboardingCompleted();
   }, []);
+ 
 
-  if (isLoading) {
-     // We haven't finished reading from AsyncStorage yet
-    // return <SplashScreen />;
+  const handleOnboardingCompleted = (data) => {
+    setFetchEmail(data.email);
+    setFetchName(data.name);
+    setIsOnboardingCompleted(true);
+  };
+  const changeOnBoardingPressed = () => {
+    setIsOnboardingCompleted(false);
   }
-
+  
   return (
-      // <Profile/>
-      // <Onboarding/>
-    <NavigationContainer  >
+    <NavigationContainer>
       <Stack.Navigator>
-        {
-          isOnboardingCompleted ? 
-            (<Stack.Screen name="Profile" component={Profile} />
-            ): (<Stack.Screen name="Onboarding" component={Onboarding} /> )
+      {
+        isOnboardingCompleted ? (
+          // Onboarding completed, user is signed in
+          <>
+          <Stack.Screen 
+            name="Home" 
+            component={HomeScreen}
+            />
+          <Stack.Screen 
+            name="Profile" 
+            options={{ headerShown: false }}
+            >
+              {() => <Profile 
+                fetchName={fetchName} 
+                fetchEmail={fetchEmail} 
+                changeOnBoarding={setIsOnboardingCompleted}
+                />}
+            </Stack.Screen>
+          </>
+          ) : (<Stack.Screen name="Onboarding"  >
+            {(props) => (
+              <Onboarding
+                {...props}
+                handleOnboardingCompleted={data => handleOnboardingCompleted(data)} 
+              />
+            )}
+          </Stack.Screen> )
         }
       </Stack.Navigator>
     </NavigationContainer>
