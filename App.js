@@ -28,10 +28,7 @@ export default function App() {
     setFetchEmail(data.email);
     setFetchName(data.name);
     setIsOnboardingCompleted(true);
-  };
-  const changeOnBoardingPressed = () => {
-    setIsOnboardingCompleted(false);
-  }
+  }; 
   
   return (
     <NavigationContainer>
