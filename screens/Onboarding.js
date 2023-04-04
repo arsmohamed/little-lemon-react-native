@@ -1,7 +1,7 @@
 import react, { useState } from 'react';
 import {View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
 
-export default function Onboarding  ()  {
+export default function Onboarding  ({handleOnboardingCompleted})  {
 
     const [name, setName ]= useState('');
     const [email, setEmail] = useState('');
@@ -31,9 +31,22 @@ export default function Onboarding  ()  {
         }
       };
     //button on press 
-    const handleCompleteOnboarding = () => {
-        validateName();
-        validateEmail();
+    const handleCompleteOnboarding = () => { 
+        if (name === '') {
+          setNameError('Please enter your name');
+        } else if (!/^[a-zA-Z]+$/.test(name)) {
+          setNameError('Name should contain only string characters');
+        } else if (email === '') {
+          setEmailError('Please enter your email');
+        } else if (
+          !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+        ) {
+          setEmailError('Please enter a valid email address');
+        } else {
+          handleOnboardingCompleted({name, email});
+          setEmailError(null);
+          setNameError(null);
+        } 
     }    
     const isDisabled = nameError !== null || emailError !== null;
     return(
@@ -49,7 +62,7 @@ export default function Onboarding  ()  {
                         style={styles.InputStyle}
                         placeholder='name'
                         value={name}
-                        onChangeText={setName}
+                        onChangeText={(text) => setName(text)}
                         onBlur={validateName}
                     />
                     {nameError && <Text tyle={styles.error}>{nameError}</Text>}
@@ -58,7 +71,7 @@ export default function Onboarding  ()  {
                         style={styles.InputStyle}
                         placeholder='email'
                         value={email}
-                        onChangeText={setEmail}
+                        onChangeText={(text) => setEmail(text)}
                         onBlur={validateEmail}
                         autoCapitalize="none"
                         autoCompleteType="email"
@@ -79,40 +92,38 @@ export default function Onboarding  ()  {
             </View>
         </View>
     )
-
 }
+
 const styles = StyleSheet.create({
     Maincontainer: {
       width: '100%',
       height: '100%'
-
     },
     header: {
       alignItems: 'center',
       backgroundColor: '#AAC3F8',
-      height: 100,
+      height: '7%',
       width: '100%'
     },
     logo: {
-        marginTop: 20,
-        width: 250, 
-        height: 100, 
-        resizeMode: 'contain'
+      marginTop: 5 ,
+      width: '60%', 
+      height: '80%', 
+      resizeMode: 'contain'
     },
     error: {
       color: 'red',
       marginBottom: 10,
     },
     CenterContainer: { 
-        backgroundColor: "#91B0F8",
+        backgroundColor: "#EDEFEE",
         height: "100%"
     },
     InfoContainer: {
         alignItems: 'center',
         justifyContent: 'center',
         height: '70%'
-    }
-    ,
+    },
     HeaderText: {
         fontSize: 24,
         fontWeight: 'reqular',

@@ -1,13 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Profile() {
+export default function Profile({fetchName, fetchEmail, changeOnBoarding}) {
 
+  const navigation = useNavigation();
   //header section
   const header = <View style={styles.header}>
-      <TouchableOpacity style={styles.button}>
-        <Ionicons name="arrow-back" size={24} color="white"   />
+      <TouchableOpacity style={styles.BackButton }>
+        <Ionicons name="arrow-back" size={24} color="white" onPress={() => navigation.goBack()}/>
       </TouchableOpacity>
       <Image source={require('../assets/Logo.png')} style={styles.logo} />
       <Image source={require('../assets/Profile.png')}  style={styles.image} />
@@ -26,8 +28,8 @@ export default function Profile() {
       <Text style={styles.TitleStyle}>Avatar </Text>
       <View style={styles.AvactarSectionStyle}>
         <Image source={require('../assets/Profile.png')}  style={styles.imageAvatar} />
-        <TouchableOpacity style={[styles.buttonStyle, {backgroundColor: 'grey'}]}>
-            <Text>Change</Text>
+        <TouchableOpacity style={[styles.buttonStyle, {backgroundColor: '#495E57'}]}>
+            <Text style={{color: 'white'}}>Change</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonStyle, {backgroundColor: 'white'}]}>
             <Text>Remove</Text>
@@ -35,19 +37,19 @@ export default function Profile() {
       </View>
       <Text style={styles.TitleStyle}>First name </Text>
       <View style={styles.userInfoStyle}> 
-        <Text style={styles.TitleHolderStyle}> Mero </Text>
+        <Text style={styles.TitleInputStyle}> {fetchName} </Text>
       </View>
       <Text style={styles.TitleStyle}>Last name </Text>
       <View style={styles.userInfoStyle}> 
-        <Text style={styles.TitleHolderStyle}> Mo </Text>
+        <Text style={styles.TitleInputStyle}> Mo </Text>
       </View>
       <Text style={styles.TitleStyle}>Email </Text>
       <View style={styles.userInfoStyle}> 
-        <Text style={styles.TitleHolderStyle}> ad@gmail.ca </Text>
+        <Text style={styles.TitleInputStyle}> {fetchEmail} </Text>
       </View>
       <Text style={styles.TitleStyle}>Phone number  </Text>
       <View style={styles.userInfoStyle}> 
-        <Text style={styles.TitleHolderStyle}> 709-21199-122 </Text>
+        <Text style={styles.TitleInputStyle}> 709-21199-122 </Text>
       </View>
   </View>
 
@@ -60,16 +62,23 @@ export default function Profile() {
   const infoSection = <View style={styles.infoSectionContainer}>
       {personalInf0}
       {EmailNotificationInfo}
-      <View style={{marginTop: 100}}>
-        <TouchableOpacity style={[styles.LogoutStyle, {backgroundColor: 'yellow'}]}>
-          <Text>Log out</Text>
+      <View style={{marginTop: 10}}>
+        <TouchableOpacity style={[styles.LogoutStyle, {backgroundColor: '#F4CE14'}]}>
+          {/* <Text>Log out</Text> */}
+          <Button 
+            title='Log Out'
+            onPress={()=>changeOnBoarding(false)}
+            color="black"
+            // style={styles.ButtoneStyle}
+            titleStyle={{ fontSize: 18, color: 'Red' }}
+            />
         </TouchableOpacity>
         <View style={styles.ChangeStyleSection}>
           <TouchableOpacity style={[styles.ChangeStyle, {backgroundColor: 'white'}]}>
               <Text>Discard Changes</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.ChangeStyle, {backgroundColor: 'grey'}]}>
-              <Text>Remove</Text>
+            <TouchableOpacity style={[styles.ChangeStyle, {backgroundColor: '#495E57'}]}>
+              <Text style={{color:'white'}}>Remove</Text>
             </TouchableOpacity>
         </View>
       </View>
@@ -86,7 +95,17 @@ export default function Profile() {
 const styles = StyleSheet.create({
   Maincontainer: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    backgroundColor: 'white'
+  },
+  BackButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#495E57',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30
   },
   button: {
     width: 40,
@@ -156,6 +175,13 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     padding: 10,
     color: "#333333", 
+  },
+  TitleInputStyle: {
+    fontSize: 18,
+    fontWeight: '200',
+    textAlign: 'left',
+    padding: 10,
+    fontWeight: 'reqular',
   },
   personalInf0Style: {
     width: '100%',
