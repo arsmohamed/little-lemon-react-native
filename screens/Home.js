@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, TextInput, TouchableOpacity , ScrollView} from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import { NavigationContainer } from '@react-navigation/native';
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('little_lemon', '1.0');
 
@@ -10,8 +9,8 @@ const categories = [
   { id: 1, name: 'starters' },
   { id: 2, name: 'mains' },
   { id: 3, name: 'desserts' },
-  // { id: 4, name: 'Drinks' },
-  // { id: 5, name: 'Special' },
+  { id: 4, name: 'Drinks' },
+  { id: 5, name: 'Special' },
 ];
 
 const Header = () => {

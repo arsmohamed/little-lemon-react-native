@@ -53,7 +53,7 @@ export default function App() {
                 />}
             </Stack.Screen>
           </>
-          ) : (<Stack.Screen name="Onboarding"  >
+          ) : (<Stack.Screen name="Onboarding" options={{ headerShown: false }} >
             {(props) => (
               <Onboarding
                 {...props}
